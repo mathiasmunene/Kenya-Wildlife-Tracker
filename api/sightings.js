@@ -1,19 +1,20 @@
 // api/sightings.js
-const data = require('./db.json');
-
-module.exports = async (req, res) => {
-  try {
-    // Set timeout to 5 seconds (max is 10s on free tier)
-    const timeout = setTimeout(() => {
-      res.status(504).json({ error: "Timeout" });
-    }, 5000);
-
-    // Send response
+export default async (req, res) => {
+    // 1. Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(data.sightings || data);
     
-    clearTimeout(timeout);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    // 2. Hardcoded data (replace with your 5 entries)
+    const data = {
+      sightings: [
+        {
+          id: 1,
+          species: "Elephant",
+          // ... copy-paste all 5 entries from your db.json
+        },
+        // ... other 4 entries
+      ]
+    };
+  
+    // 3. Send response (takes <1ms)
+    return res.json(data);
+  };
