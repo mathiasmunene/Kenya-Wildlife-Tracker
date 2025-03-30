@@ -1,5 +1,3 @@
-
-// script.js
 document.addEventListener("DOMContentLoaded", () => {
     // DOM Elements
     const elements = {
@@ -26,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
         markers: []
     };
 
+    // API Configuration
+    const API_URL = 'https://kenya-wildlife-tracker.vercel.app/api/sightings';
+
     // Initialize the application
     init();
 
@@ -39,28 +40,70 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchSightings() {
         showLoading();
         try {
-            // Using json-server for local development
-            const response = await fetch('https://kenya-wildlife-tracker.vercel.app');
+            const response = await fetch(API_URL);
             
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`API Error: ${response.status} - ${errorText}`);
             }
             
-            state.sightings = await response.json();
+            const data = await response.json();
+            state.sightings = data.sightings || data; // Handle both formats
             state.filteredSightings = [...state.sightings];
             renderSightings();
             
-            // If we're in map view, update the map
             if (state.currentView === "map") {
                 updateMap();
             }
         } catch (error) {
             console.error("Error fetching sightings:", error);
-            showNotification("Failed to load sightings. Please try again later.", "error");
+            showNotification("Failed to load sightings. Using local data...", "error");
+            
+            // Fallback to local storage
+            const localData = localStorage.getItem('wildlifeSightings');
+            if (localData) {
+                state.sightings = JSON.parse(localData);
+                state.filteredSightings = [...state.sightings];
+                renderSightings();
+            }
         } finally {
             hideLoading();
         }
     }
+
+    // Add new sighting (updated for local storage)
+    async function addSighting(sighting) {
+        try {
+            const newSighting = {
+                ...sighting,
+                id: Date.now(), // Generate simple ID
+                timestamp: new Date().toISOString()
+            };
+
+            // Add to memory state
+            state.sightings.unshift(newSighting);
+            state.filteredSightings.unshift(newSighting);
+            
+            // Save to localStorage
+            localStorage.setItem('wildlifeSightings', JSON.stringify(state.sightings));
+            
+            renderSightings();
+            updateStats();
+            
+            if (state.currentView === "map") {
+                updateMap();
+            }
+            
+            showNotification("Sighting reported successfully! (Saved locally)", "success");
+            return newSighting;
+        } catch (error) {
+            console.error("Error adding sighting:", error);
+            showNotification("Failed to report sighting.", "error");
+            throw error;
+        }
+    }
+
+});
 
     // Render sightings to DOM
     function renderSightings() {
@@ -333,4 +376,4 @@ document.addEventListener("DOMContentLoaded", () => {
         
         document.body.appendChild(modal);
     }
-});
+    

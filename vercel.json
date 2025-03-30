@@ -1,6 +1,10 @@
 {
     "version": 2,
     "routes": [
-      { "src": "/api/sightings", "dest": "/api/sightings.js" }
+      { 
+        "src": "/api/sightings",
+        "dest": "/api/sightings.js",
+        "methods": ["GET"] 
+      }
     ]
   }
