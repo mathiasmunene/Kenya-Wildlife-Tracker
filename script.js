@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showLoading();
         try {
             // Using json-server for local development
-            const response = await fetch('http://localhost:3000/sightings');
+            const response = await fetch('https://kenya-wildlife-tracker.vercel.app/');
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
