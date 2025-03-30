@@ -1,0 +1,573 @@
+/* styles.css */
+:root {
+    --kenya-green: #006644;
+    --kenya-red: #BB0000;
+    --kenya-black: #000000;
+    --kenya-white: #FFFFFF;
+    --safari-orange: #FF8C00;
+    --safari-yellow: #FFD700;
+    --safari-brown: #8B4513;
+    --danger-high: #FF3333;
+    --danger-medium: #FFA500;
+    --danger-low: #33CC33;
+    --success-green: #4CAF50;
+    --error-red: #F44336;
+    --info-blue: #2196F3;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: var(--kenya-black);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(135deg, var(--kenya-green), var(--kenya-red));
+    color: var(--kenya-white);
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem;
+    border-radius: 50px;
+}
+
+#view-toggle button {
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#view-toggle button.active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+#view-toggle button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+#controls {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--kenya-green);
+}
+
+select, input[type="text"], input[type="date"], textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--kenya-green);
+    box-shadow: 0 0 0 3px rgba(0, 102, 68, 0.1);
+}
+
+#reset-filters {
+    background: var(--kenya-red);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#reset-filters:hover {
+    background: #990000;
+    transform: translateY(-2px);
+}
+
+#map-container {
+    height: 500px;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--kenya-green);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#list-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+#total-sightings {
+    font-weight: bold;
+    color: var(--kenya-green);
+}
+
+.danger-count {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+.danger-count.high {
+    background-color: rgba(255, 51, 51, 0.1);
+    color: var(--danger-high);
+}
+
+.danger-count.medium {
+    background-color: rgba(255, 165, 0, 0.1);
+    color: var(--danger-medium);
+}
+
+.danger-count.low {
+    background-color: rgba(51, 204, 51, 0.1);
+    color: var(--danger-low);
+}
+
+#sightings-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.sighting {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid var(--kenya-green);
+    position: relative;
+    overflow: hidden;
+}
+
+.sighting.high {
+    border-left-color: var(--danger-high);
+}
+
+.sighting.medium {
+    border-left-color: var(--danger-medium);
+}
+
+.sighting.low {
+    border-left-color: var(--danger-low);
+}
+
+.sighting:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sighting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.sighting h3 {
+    color: var(--kenya-green);
+    font-size: 1.3rem;
+}
+
+.danger-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.danger-badge.high {
+    background-color: var(--danger-high);
+    color: white;
+}
+
+.danger-badge.medium {
+    background-color: var(--danger-medium);
+    color: white;
+}
+
+.danger-badge.low {
+    background-color: var(--danger-low);
+    color: white;
+}
+
+.sighting p {
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.sighting .location {
+    font-weight: 500;
+}
+
+.sighting .timestamp {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.sighting .notes {
+    padding: 0.75rem;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+    border-left: 3px solid #ddd;
+}
+
+.sighting-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.reporter {
+    color: #666;
+}
+
+.view-image-btn {
+    background: transparent;
+    border: 1px solid var(--kenya-green);
+    color: var(--kenya-green);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.view-image-btn:hover {
+    background: var(--kenya-green);
+    color: white;
+}
+
+#report-form {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-top: 3rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#report-form h2 {
+    color: var(--kenya-red);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#sighting-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--kenya-green);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#sighting-form button {
+    background: linear-gradient(to right, var(--kenya-green), var(--kenya-red));
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#sighting-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Notification */
+#notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+#notification.success {
+    background-color: var(--success-green);
+    transform: translateY(0);
+    opacity: 1;
+}
+
+#notification.error {
+    background-color: var(--error-red);
+    transform: translateY(0);
+    opacity: 1;
+}
+
+#notification.info {
+    background-color: var(--info-blue);
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Image Modal */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 40px;
+    height: 40px;
+    background: var(--kenya-red);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Map Popup Styles */
+.map-popup {
+    padding: 0.5rem;
+    min-width: 200px;
+}
+
+.map-popup h4 {
+    margin-bottom: 0.5rem;
+    color: var(--kenya-green);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.map-popup p {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.popup-image {
+    width: 100%;
+    height: auto;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+}
+
+.danger-high {
+    color: var(--danger-high);
+}
+
+.danger-medium {
+    color: var(--danger-medium);
+}
+
+.danger-low {
+    color: var(--danger-low);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    #sightings-list {
+        grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    #map-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    #filters {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        min-width: 100%;
+    }
+    
+    #reset-filters {
+        width: 100%;
+        justify-content: center;
+    }
+}

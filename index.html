@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenya Wildlife Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-paw"></i> Kenya Wildlife Tracker</h1>
+            <div id="view-toggle">
+                <button id="list-view" class="active"><i class="fas fa-list"></i> List View</button>
+                <button id="map-view"><i class="fas fa-map-marked-alt"></i> Map View</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="controls">
+            <div id="filters">
+                <div class="filter-group">
+                    <label for="species-filter"><i class="fas fa-search"></i> Filter by Species</label>
+                    <select id="species-filter">
+                        <option value="all">All Species</option>
+                        <option value="elephant">Elephant</option>
+                        <option value="lion">Lion</option>
+                        <option value="rhino">Rhino</option>
+                        <option value="leopard">Leopard</option>
+                        <option value="buffalo">Buffalo</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="danger-filter"><i class="fas fa-exclamation-triangle"></i> Danger Level</label>
+                    <select id="danger-filter">
+                        <option value="all">All Levels</option>
+                        <option value="high">High Danger</option>
+                        <option value="medium">Medium Danger</option>
+                        <option value="low">Low Danger</option>
+                    </select>
+                </div>
+
+                <button id="reset-filters"><i class="fas fa-sync-alt"></i> Reset Filters</button>
+            </div>
+        </section>
+
+        <div id="map-container" class="hidden">
+            <div id="map"></div>
+        </div>
+
+        <div id="list-container">
+            <div class="stats-bar">
+                <span id="total-sightings">0 sightings</span>
+                <span id="danger-counts"></span>
+            </div>
+            <ul id="sightings-list">
+                <!-- Sightings will be populated here -->
+            </ul>
+        </div>
+
+        <section id="report-form">
+            <h2><i class="fas fa-plus-circle"></i> Report New Sighting</h2>
+            <form id="sighting-form">
+                <div class="form-group">
+                    <label for="species"><i class="fas fa-dove"></i> Species</label>
+                    <input type="text" id="species" placeholder="e.g. Elephant" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location"><i class="fas fa-map-marker-alt"></i> Location</label>
+                    <input type="text" id="location" placeholder="e.g. Nairobi National Park" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="danger-level"><i class="fas fa-bolt"></i> Danger Level</label>
+                        <select id="danger-level" required>
+                            <option value="low">Low Danger</option>
+                            <option value="medium">Medium Danger</option>
+                            <option value="high">High Danger</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date"><i class="far fa-calendar-alt"></i> Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes"><i class="fas fa-sticky-note"></i> Additional Notes</label>
+                    <textarea id="notes" placeholder="Any additional details..."></textarea>
+                </div>
+                
+                <button type="submit"><i class="fas fa-paper-plane"></i> Submit Report</button>
+            </form>
+        </section>
+    </main>
+
+    <div id="notification" class="hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
