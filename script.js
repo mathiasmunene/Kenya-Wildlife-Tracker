@@ -38,24 +38,35 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchSightings() {
         showLoading();
         try {
-            // Using json-server for local development
-            const response = await fetch('http://localhost:3000/sightings');
+            // Replace with your actual Gist raw URL
+            const gistUrl = 'https://gist.githubusercontent.com/yourusername/gist-id/raw/wildlife-sightings.json';
+            const response = await fetch(gistUrl);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            state.sightings = await response.json();
+            const data = await response.json();
+            state.sightings = data.sightings; // Adjust if your Gist structure is different
             state.filteredSightings = [...state.sightings];
             renderSightings();
             
-            // If we're in map view, update the map
             if (state.currentView === "map") {
                 updateMap();
             }
         } catch (error) {
             console.error("Error fetching sightings:", error);
-            showNotification("Failed to load sightings. Please try again later.", "error");
+            
+            // Fallback to local storage if Gist fails
+            const localData = localStorage.getItem('wildlifeSightings');
+            if (localData) {
+                state.sightings = JSON.parse(localData);
+                state.filteredSightings = [...state.sightings];
+                renderSightings();
+                showNotification("Using locally saved data", "warning");
+            } else {
+                showNotification("Failed to load sightings. Please try again later.", "error");
+            }
         } finally {
             hideLoading();
         }
