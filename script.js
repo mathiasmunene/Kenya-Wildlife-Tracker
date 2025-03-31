@@ -45,7 +45,17 @@ document.addEventListener("DOMContentLoaded", () => {
         setupEventListeners();
         await fetchSightings();
         updateStats();
-    }
+
+        const localData = localStorage.getItem('wildlifeSightings');
+        if (localData) {
+            state.sightings = JSON.parse(localData);
+            state.filteredSightings = [...state.sightings];
+        }
+        
+        setupEventListeners();
+        await fetchSightings(); // This will override with API data if available
+        updateStats();
+        }
 
     // Fetch data from API
     async function fetchSightings() {
@@ -174,28 +184,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // Event Listeners
     function setupEventListeners() {
         // Form submission
-        elements.sightingForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const formData = new FormData(elements.sightingForm);
-            
-            const newSighting = {
-                species: formData.get('species').trim(),
-                location: formData.get('location').trim(),
-                dangerLevel: formData.get('danger-level'),
-                timestamp: formData.get('date') || new Date().toISOString(),
-                notes: formData.get('notes').trim(),
-                reporter: "User" // In a real app, this would be the logged in user
-            };
+        // Replace your current form submit listener with this:
+elements.sightingForm.addEventListener("submit", async (e) => {
+    e.preventDefault(); // This was missing!
+    
+    const formData = new FormData(elements.sightingForm);
+    
+    const newSighting = {
+        species: formData.get('species').trim(),
+        location: formData.get('location').trim(),
+        dangerLevel: formData.get('danger-level'),
+        timestamp: new Date().toISOString(), // Auto-generate timestamp
+        notes: formData.get('notes').trim(),
+        reporter: "User"
+    };
 
-            try {
-                await addSighting(newSighting);
-                showNotification("Sighting reported successfully!", "success");
-                elements.sightingForm.reset();
-            } catch (error) {
-                console.error("Error adding sighting:", error);
-                showNotification("Failed to report sighting. Please try again.", "error");
-            }
-        });
+    try {
+        await addSighting(newSighting);
+        elements.sightingForm.reset(); // Clear form after success
+    } catch (error) {
+        console.error("Submission error:", error);
+    }
+});
 
         // Filter changes
         elements.speciesFilter.addEventListener("change", filterSightings);
@@ -256,30 +266,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add new sighting
     async function addSighting(sighting) {
-        const response = await fetch("http://localhost:3000/sightings", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(sighting)
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        try {
+            // 1. Create new sighting object
+            const newSighting = {
+                ...sighting,
+                id: Date.now(), // Generate unique ID
+                timestamp: new Date().toISOString()
+            };
+    
+            // 2. Add to local state
+            state.sightings.unshift(newSighting);
+            state.filteredSightings.unshift(newSighting);
+            
+            // 3. Save to localStorage (since we can't write to Vercel API)
+            localStorage.setItem('wildlifeSightings', JSON.stringify(state.sightings));
+            
+            // 4. Update UI
+            renderSightings();
+            updateStats();
+            
+            if (state.currentView === "map") {
+                updateMap();
+            }
+            
+            // 5. Show success message
+            showNotification("Sighting added successfully!", "success");
+            return newSighting;
+            
+        } catch (error) {
+            console.error("Error adding sighting:", error);
+            showNotification("Failed to add sighting", "error");
+            throw error;
         }
-
-        const newSighting = await response.json();
-        state.sightings.unshift(newSighting); // Add to beginning
-        state.filteredSightings.unshift(newSighting);
-        
-        renderSightings();
-        updateStats();
-        
-        if (state.currentView === "map") {
-            updateMap();
-        }
-        
-        return newSighting;
     }
 
     // Update statistics display
