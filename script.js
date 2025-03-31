@@ -40,7 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchSightings() {
         showLoading();
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(API_URL, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
             
             if (!response.ok) {
                 const errorText = await response.text();
@@ -48,7 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             const data = await response.json();
-            state.sightings = data.sightings || data; // Handle both formats
+            console.log("API Response:", data); // Debug log
+            
+            state.sightings = data.sightings || data;
             state.filteredSightings = [...state.sightings];
             renderSightings();
             
@@ -70,40 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
             hideLoading();
         }
     }
-
-    // Add new sighting (updated for local storage)
-    async function addSighting(sighting) {
-        try {
-            const newSighting = {
-                ...sighting,
-                id: Date.now(), // Generate simple ID
-                timestamp: new Date().toISOString()
-            };
-
-            // Add to memory state
-            state.sightings.unshift(newSighting);
-            state.filteredSightings.unshift(newSighting);
-            
-            // Save to localStorage
-            localStorage.setItem('wildlifeSightings', JSON.stringify(state.sightings));
-            
-            renderSightings();
-            updateStats();
-            
-            if (state.currentView === "map") {
-                updateMap();
-            }
-            
-            showNotification("Sighting reported successfully! (Saved locally)", "success");
-            return newSighting;
-        } catch (error) {
-            console.error("Error adding sighting:", error);
-            showNotification("Failed to report sighting.", "error");
-            throw error;
-        }
-    }
-
-});
 
     // Render sightings to DOM
     function renderSightings() {
@@ -135,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-
     // Initialize and update Leaflet map
     function updateMap() {
         // Clear existing markers
@@ -341,39 +312,4 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
     }
-
-    function showNotification(message, type) {
-        elements.notification.textContent = message;
-        elements.notification.className = type;
-        elements.notification.classList.remove('hidden');
-        
-        setTimeout(() => {
-            elements.notification.classList.add('hidden');
-        }, 3000);
-    }
-
-    function showLoading() {
-        // Implement loading indicator if needed
-    }
-
-    function hideLoading() {
-        // Hide loading indicator if needed
-    }
-
-    function showImageModal(imageUrl) {
-        const modal = document.createElement('div');
-        modal.className = 'image-modal';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <img src="${escapeHTML(imageUrl)}" alt="Wildlife Sighting">
-            </div>
-        `;
-        
-        modal.querySelector('.close-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
-        
-        document.body.appendChild(modal);
-    }
-    
+});
