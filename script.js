@@ -24,6 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
         markers: []
     };
 
+    function showLoading() {
+        console.log("Showing loading indicator");
+        elements.notification.textContent = "Loading sightings...";
+        elements.notification.className = "loading";
+        elements.notification.classList.remove("hidden");
+    }
+
+    function hideLoading() {
+        elements.notification.classList.add("hidden");
+    }
+
     // API Configuration
     const API_URL = 'https://kenya-wildlife-tracker.vercel.app/api/sightings';
 
